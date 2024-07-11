@@ -89,7 +89,7 @@ class ActionsCfg:
 
     # will be set by agent env cfg
     body_joint_pos: mdp.JointPositionActionCfg = MISSING
-    finger_joint_pos: mdp.BinaryJointPositionActionCfg = MISSING
+    finger_joint_pos: mdp.BinaryJointVelocityActionCfg = MISSING
 
 
 @configclass
@@ -125,6 +125,7 @@ class EventCfg:
         mode="reset",
         params={
             "pose_range": {"x": (-0.1, 0.1), "y": (-0.25, 0.25), "z": (0.0, 0.0)},
+            # "pose_range": {"x": (0.0, 0.0), "y": (0.0, 0.0), "z": (0.0, 0.0)},
             "velocity_range": {},
             "asset_cfg": SceneEntityCfg("object", body_names="Object"),
         },
@@ -213,7 +214,6 @@ class LiftEnvCfg(ManagerBasedRLEnvCfg):
         self.episode_length_s = 5.0
         # simulation settings
         self.sim.dt = 0.01  # 100Hz
-        self.sim.render_interval = self.decimation
 
         self.sim.physx.bounce_threshold_velocity = 0.2
         self.sim.physx.bounce_threshold_velocity = 0.01
