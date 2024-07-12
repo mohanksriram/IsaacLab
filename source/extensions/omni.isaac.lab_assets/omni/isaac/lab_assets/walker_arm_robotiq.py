@@ -21,7 +21,8 @@ from omni.isaac.lab.assets.articulation import ArticulationCfg
 # WALKER_ARM_USD_PATH = "/home/mohan/Downloads/I2A-space-model-dump/model-dump/Collected_Walker_rev2/Library/robots/arms/kg3-lite/derived/usd/kinova_arm_panda_hand.usd"
 # WALKER_ARM_USD_PATH = "/home/mohan/Downloads/I2A-space-model-dump/model-dump/Collected_Walker_rev2/Library/robots/arms/kg3-lite/derived_with_gripper_and_camera_custom/kinova_plus_robotiq_flat.usd"
 # WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_arm_best_v2.usd"
-WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_arm_robotiq_145.usd"
+# WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_arm_robotiq_145.usd"
+WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_robotiq_hierarchy_145.usd.usd"
 ##
 # Configuration
 ##
