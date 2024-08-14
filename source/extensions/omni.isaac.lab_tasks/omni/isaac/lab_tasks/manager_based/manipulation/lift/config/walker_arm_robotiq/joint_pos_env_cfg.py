@@ -73,12 +73,14 @@ class WalkerArmRobotiqCubeLiftEnvCfg(LiftEnvCfg):
         marker_cfg.markers["frame"].scale = (0.1, 0.1, 0.1)
         marker_cfg.prim_path = "/Visuals/FrameTransformer"
         self.scene.ee_frame = FrameTransformerCfg(
-            prim_path="{ENV_REGEX_NS}/Robot/robot_base_link",
+            prim_path="{ENV_REGEX_NS}/Robot/arm/robot_base_link",
+            # prim_path="{ENV_REGEX_NS}/Robot/robot_base_link",
             debug_vis=False,
             visualizer_cfg=marker_cfg,
             target_frames=[
                 FrameTransformerCfg.FrameCfg(
-                    prim_path="{ENV_REGEX_NS}/Robot/robotiq_arg2f_base_link",
+                    prim_path="{ENV_REGEX_NS}/Robot/gripper/robotiq_arg2f_base_link",
+                    # prim_path="{ENV_REGEX_NS}/Robot/robotiq_arg2f_base_link",
                     # prim_path="{ENV_REGEX_NS}/Robot/EndEffector_Link",
                     name="end_effector",
                     offset=OffsetCfg(

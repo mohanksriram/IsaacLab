@@ -209,7 +209,8 @@ class FrameTransformer(SensorBase):
         tracked_body_names = list(body_names_to_frames.keys())
         # Construct regex expression for the body names
         body_names_regex = r"(" + "|".join(tracked_body_names) + r")"
-        body_names_regex = f"{self.cfg.prim_path.rsplit('/', 1)[0]}/{body_names_regex}"
+        body_names_regex = f"{self.cfg.prim_path.rsplit('/', 2)[0]}/.*/{body_names_regex}"
+        # body_names_regex = "/World/envs/env_.*/Robot/.*/(robot_base_link|robotiq_arg2f_base_link)"
         # Create simulation view
         self._physics_sim_view = physx.create_simulation_view(self._backend)
         self._physics_sim_view.set_subspace_roots("/")
