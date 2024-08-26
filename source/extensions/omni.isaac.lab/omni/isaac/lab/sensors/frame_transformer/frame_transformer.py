@@ -209,6 +209,7 @@ class FrameTransformer(SensorBase):
         tracked_body_names = list(body_names_to_frames.keys())
         # Construct regex expression for the body names
         body_names_regex = r"(" + "|".join(tracked_body_names) + r")"
+        # import pdb; pdb.set_trace()
         body_names_regex = f"{self.cfg.prim_path.rsplit('/', 2)[0]}/.*/{body_names_regex}"
         # body_names_regex = "/World/envs/env_.*/Robot/.*/(robot_base_link|robotiq_arg2f_base_link)"
         # Create simulation view

@@ -11,8 +11,8 @@ from omni.isaac.lab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 from omni.isaac.lab.utils import configclass
 from omni.isaac.lab.utils.assets import ISAAC_NUCLEUS_DIR
 
-from omni.isaac.lab_tasks.manager_based.manipulation.lift import mdp
-from omni.isaac.lab_tasks.manager_based.manipulation.lift.lift_env_cfg import LiftEnvCfg
+from omni.isaac.lab_tasks.manager_based.manipulation.got_reach import mdp
+from omni.isaac.lab_tasks.manager_based.manipulation.got_reach.got_reach_env_cfg import GOTReachEnvCfg
 
 ##
 # Pre-defined configs
@@ -22,7 +22,7 @@ from omni.isaac.lab_assets.walker_arm_robotiq import WALKER_ARM_ROBOTIQ_CFG  # i
 
 
 @configclass
-class WalkerArmRobotiqCubeLiftEnvCfg(LiftEnvCfg):
+class WalkerArmRobotiqGOTReachEnvCfg(GOTReachEnvCfg):
     def __post_init__(self):
         # post init of parent
         super().__post_init__()
@@ -32,24 +32,24 @@ class WalkerArmRobotiqCubeLiftEnvCfg(LiftEnvCfg):
 
         # Set actions for the specific robot type (franka)
         self.actions.body_joint_pos = mdp.JointPositionActionCfg(
-            asset_name="robot", joint_names=["joint_.*_1"], scale=0.5, use_default_offset=True
+            asset_name="robot", joint_names=["joint_.*_4"], scale=0.5, use_default_offset=True
         )
         self.actions.finger_joint_pos = mdp.BinaryJointVelocityActionCfg(
             asset_name="robot",
-            joint_names=["left_outer_knuckle_joint_1", "right_outer_knuckle_joint_1"],
-            open_command_expr={"left_outer_knuckle_joint_1": 0.0, "right_outer_knuckle_joint_1": 0.0},
-            # close_command_expr={"finger_joint_1": -80.0, "right_outer_knuckle_joint_1": -80.0},
-            # open_command_expr={"finger_joint_1": -80.0, "right_outer_knuckle_joint_1": -80.0},
-            # open_command_expr={"finger_joint_1": 80.0, "right_outer_knuckle_joint_1": 80.0},
-            close_command_expr={"left_outer_knuckle_joint_1": 50.0, "right_outer_knuckle_joint_1": -50.0},
+            joint_names=["left_outer_knuckle_joint_4", "right_outer_knuckle_joint_4"],
+            open_command_expr={"left_outer_knuckle_joint_4": 0.0, "right_outer_knuckle_joint_4": 0.0},
+            # close_command_expr={"finger_joint_4": -80.0, "right_outer_knuckle_joint_4": -80.0},
+            # open_command_expr={"finger_joint_4": -80.0, "right_outer_knuckle_joint_4": -80.0},
+            # open_command_expr={"finger_joint_4": 80.0, "right_outer_knuckle_joint_4": 80.0},
+            close_command_expr={"left_outer_knuckle_joint_4": 50.0, "right_outer_knuckle_joint_4": -50.0},
         )
         # Set the body name for the end effector
-        self.commands.object_pose.body_name = "RobotiqBase_Link_1"
+        self.commands.object_pose.body_name = "RobotiqBase_Link_4"
 
         # Set Cube as object
         self.scene.object = RigidObjectCfg(
             prim_path="{ENV_REGEX_NS}/Object",
-            init_state=RigidObjectCfg.InitialStateCfg(pos=[0.55, 0.4, 0], rot=[1, 0, 0, 0]),
+            init_state=RigidObjectCfg.InitialStateCfg(pos=[0.65, 0.3, 0], rot=[1, 0, 0, 0]),
             spawn=UsdFileCfg(
                 usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd",
                 # scale=(1.0, 0.8, 0.8),
@@ -73,13 +73,13 @@ class WalkerArmRobotiqCubeLiftEnvCfg(LiftEnvCfg):
         marker_cfg.markers["frame"].scale = (0.1, 0.1, 0.1)
         marker_cfg.prim_path = "/Visuals/FrameTransformer"
         self.scene.ee_frame = FrameTransformerCfg(
-            prim_path="{ENV_REGEX_NS}/Robot/arm1/actuator1/RobotBase_Link_1",
-            # prim_path="{ENV_REGEX_NS}/Robot/arm1/actuator/robot_base_link",
+            prim_path="{ENV_REGEX_NS}/Robot/leg2/actuator4/RobotBase_Link_4",
+            # prim_path="{ENV_REGEX_NS}/Robot/leg2/actuator/robot_base_link",
             debug_vis=False,
             visualizer_cfg=marker_cfg,
             target_frames=[
                 FrameTransformerCfg.FrameCfg(
-                    prim_path="{ENV_REGEX_NS}/Robot/arm1/gripper1/RobotiqBase_Link_1",
+                    prim_path="{ENV_REGEX_NS}/Robot/leg2/gripper4/RobotiqBase_Link_4",
                     name="end_effector",
                     offset=OffsetCfg(
                         # pos=[0.0, 0.0, 0.1034],
@@ -95,7 +95,7 @@ class WalkerArmRobotiqCubeLiftEnvCfg(LiftEnvCfg):
 
 
 @configclass
-class WalkerArmRobotiqCubeLiftEnvCfg_PLAY(WalkerArmRobotiqCubeLiftEnvCfg):
+class WalkerArmRobotiqGOTReachEnvCfg_PLAY(WalkerArmRobotiqGOTReachEnvCfg):
     def __post_init__(self):
         # post init of parent
         super().__post_init__()
