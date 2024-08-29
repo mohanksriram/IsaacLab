@@ -27,6 +27,28 @@ def object_is_lifted(
 
 def object_ee_distance(
     env: ManagerBasedRLEnv,
+    # std: float,
+    object_cfg: SceneEntityCfg = SceneEntityCfg("object"),
+    ee_frame_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame"),
+) -> torch.Tensor:
+    """Reward the agent for reaching the object using tanh-kernel."""
+    # extract the used quantities (to enable type-hinting)
+    object: RigidObject = env.scene[object_cfg.name]
+    # import pdb; pdb.set_trace()
+    # new_object = env.scene['new_object']
+    cube_pos_w = env.scene['cube_frame'].data.target_pos_w[..., 0, :]
+    ee_frame: FrameTransformer = env.scene[ee_frame_cfg.name]
+    # Target object position: (num_envs, 3)
+    # cube_pos_w = object.data.root_pos_w
+    # End-effector position: (num_envs, 3)
+    ee_w = ee_frame.data.target_pos_w[..., 0, :]
+    # Distance of the end-effector to the object: (num_envs,)
+    return torch.norm(cube_pos_w - ee_w, dim=1)
+
+    # return 1 - torch.tanh(object_ee_distance / std)
+
+def object_ee_distance_tanh(
+    env: ManagerBasedRLEnv,
     std: float,
     object_cfg: SceneEntityCfg = SceneEntityCfg("object"),
     ee_frame_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame"),
@@ -34,16 +56,18 @@ def object_ee_distance(
     """Reward the agent for reaching the object using tanh-kernel."""
     # extract the used quantities (to enable type-hinting)
     object: RigidObject = env.scene[object_cfg.name]
+    # import pdb; pdb.set_trace()
+    # new_object = env.scene['new_object']
+    cube_pos_w = env.scene['cube_frame'].data.target_pos_w[..., 0, :]
     ee_frame: FrameTransformer = env.scene[ee_frame_cfg.name]
     # Target object position: (num_envs, 3)
-    cube_pos_w = object.data.root_pos_w
+    # cube_pos_w = object.data.root_pos_w
     # End-effector position: (num_envs, 3)
     ee_w = ee_frame.data.target_pos_w[..., 0, :]
     # Distance of the end-effector to the object: (num_envs,)
     object_ee_distance = torch.norm(cube_pos_w - ee_w, dim=1)
 
     return 1 - torch.tanh(object_ee_distance / std)
-
 
 def object_goal_distance(
     env: ManagerBasedRLEnv,

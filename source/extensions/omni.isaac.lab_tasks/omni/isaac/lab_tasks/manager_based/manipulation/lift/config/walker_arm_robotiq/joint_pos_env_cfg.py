@@ -38,6 +38,7 @@ class WalkerArmRobotiqCubeLiftEnvCfg(LiftEnvCfg):
             asset_name="robot",
             joint_names=["left_outer_knuckle_joint_1", "right_outer_knuckle_joint_1"],
             open_command_expr={"left_outer_knuckle_joint_1": 0.0, "right_outer_knuckle_joint_1": 0.0},
+            # close_command_expr={"left_outer_knuckle_joint_1": 0.0, "right_outer_knuckle_joint_1": 0.0},
             # close_command_expr={"finger_joint_1": -80.0, "right_outer_knuckle_joint_1": -80.0},
             # open_command_expr={"finger_joint_1": -80.0, "right_outer_knuckle_joint_1": -80.0},
             # open_command_expr={"finger_joint_1": 80.0, "right_outer_knuckle_joint_1": 80.0},
@@ -49,7 +50,7 @@ class WalkerArmRobotiqCubeLiftEnvCfg(LiftEnvCfg):
         # Set Cube as object
         self.scene.object = RigidObjectCfg(
             prim_path="{ENV_REGEX_NS}/Object",
-            init_state=RigidObjectCfg.InitialStateCfg(pos=[0.55, 0.4, 0], rot=[1, 0, 0, 0]),
+            init_state=RigidObjectCfg.InitialStateCfg(pos=[0.8, 0.2, 0], rot=[1, 0, 0, 0]),
             spawn=UsdFileCfg(
                 usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/DexCube/dex_cube_instanceable.usd",
                 # scale=(1.0, 0.8, 0.8),
@@ -72,6 +73,28 @@ class WalkerArmRobotiqCubeLiftEnvCfg(LiftEnvCfg):
         marker_cfg = FRAME_MARKER_CFG.copy()
         marker_cfg.markers["frame"].scale = (0.1, 0.1, 0.1)
         marker_cfg.prim_path = "/Visuals/FrameTransformer"
+
+        self.scene.cube_frame = FrameTransformerCfg(
+            prim_path="{ENV_REGEX_NS}/NewObject/truss_main/truss/cube1",
+            # prim_path="{ENV_REGEX_NS}/Robot/arm1/actuator/robot_base_link",
+            debug_vis=False,
+            visualizer_cfg=marker_cfg,
+            target_frames=[
+                FrameTransformerCfg.FrameCfg(
+                    prim_path="{ENV_REGEX_NS}/NewObject/truss_main/truss/cube3",
+                    name="end_effector",
+                    # offset=OffsetCfg(
+                    #     # pos=[0.0, 0.0, 0.1034],
+                    #     # pos=[0.0, 0.0, 0.166],
+                    #     # pos=(0.0, 0.0, 0.0),
+                    #     # pos=(0.0, 0.0, 0.225),
+                    #     # rot=(0.48, 0.51, -0.52, 0.47)
+                    #     # pos=[0.0, 0.0, 0.08],
+                    # ),
+                ),
+            ],
+        )
+
         self.scene.ee_frame = FrameTransformerCfg(
             prim_path="{ENV_REGEX_NS}/Robot/arm1/actuator1/RobotBase_Link_1",
             # prim_path="{ENV_REGEX_NS}/Robot/arm1/actuator/robot_base_link",

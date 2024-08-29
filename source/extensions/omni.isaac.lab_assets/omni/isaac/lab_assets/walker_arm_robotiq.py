@@ -28,9 +28,10 @@ from omni.isaac.lab.assets.articulation import ArticulationCfg
 # WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_final_two_arm.usd"
 # WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_all_arms_final.usd"
 # WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_all_arms_final_scaled.usd"
-WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_fours.usd"
+# WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_fours.usd"
 # WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_threes.usd"
 # WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_twos.usd"
+WALKER_ARM_USD_PATH = "/home/mohan/Downloads/2F-85/walker_twos_no_gravity.usd"
 
 ##
 # Configuration

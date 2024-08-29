@@ -20,6 +20,8 @@ from omni.isaac.lab.sensors.frame_transformer.frame_transformer_cfg import Frame
 from omni.isaac.lab.sim.spawners.from_files.from_files_cfg import GroundPlaneCfg, UsdFileCfg
 from omni.isaac.lab.utils import configclass
 from omni.isaac.lab.utils.assets import ISAAC_NUCLEUS_DIR
+from omni.isaac.lab.sim.schemas.schemas_cfg import RigidBodyPropertiesCfg
+
 
 from . import mdp
 
@@ -42,11 +44,45 @@ class ObjectTableSceneCfg(InteractiveSceneCfg):
     # target object: will be populated by agent env cfg
     object: RigidObjectCfg = MISSING
 
+    cube_frame: FrameTransformerCfg = MISSING
+
     # Table
-    table = AssetBaseCfg(
-        prim_path="{ENV_REGEX_NS}/Table",
-        init_state=AssetBaseCfg.InitialStateCfg(pos=[1.0, 0.5, 0], rot=[0.707, 0, 0, 0.707]),
-        spawn=UsdFileCfg(usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/Mounts/SeattleLabTable/table_instanceable.usd"),
+    # table = AssetBaseCfg(
+    #     prim_path="{ENV_REGEX_NS}/Table",
+    #     init_state=AssetBaseCfg.InitialStateCfg(pos=[1.0, 0.5, 0], rot=[0.707, 0, 0, 0.707]),
+    #     spawn=UsdFileCfg(usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/Mounts/SeattleLabTable/table_instanceable.usd"),
+    # )
+
+    # new_object = RigidObjectCfg(
+    #     prim_path="{ENV_REGEX_NS}/NewObject",
+    #     init_state=RigidObjectCfg.InitialStateCfg(pos=[0.6, 0.5, 0], rot=[0.707, 0, 0, 0.707]),
+    #     spawn=UsdFileCfg(usd_path=f"/home/mohan/Downloads/2F-85/cube_plus_cylinder.usd",
+    #                      rigid_props=RigidBodyPropertiesCfg(
+    #                 solver_position_iteration_count=16,
+    #                 solver_velocity_iteration_count=1,
+    #                 max_angular_velocity=10.0,
+    #                 max_linear_velocity=10.0,
+    #                 max_depenetration_velocity=5.0,
+    #                 disable_gravity=False,
+    #             ),
+    #                      ),
+
+    new_object = AssetBaseCfg(
+        prim_path="{ENV_REGEX_NS}/NewObject",
+                # init_state=AssetBaseCfg.InitialStateCfg(pos=[0.65, 0.6, -0.2], rot=[0.707, 0, 0, 0.707]),
+        init_state=AssetBaseCfg.InitialStateCfg(pos=[0.65, 0.6, 0.], rot=[0.707, 0, 0, 0.707]),
+        spawn=UsdFileCfg(usd_path=f"/home/mohan/Downloads/2F-85/only_truss.usd",
+                         rigid_props=RigidBodyPropertiesCfg(
+                    solver_position_iteration_count=16,
+                    solver_velocity_iteration_count=1,
+                    max_angular_velocity=0.0,
+                    max_linear_velocity=0.0,
+                    max_depenetration_velocity=5.0,
+                    disable_gravity=False,
+                ),
+                         ),
+
+        
     )
 
     # plane
@@ -127,7 +163,7 @@ class EventCfg:
         mode="reset",
         params={
             # "pose_range": {"x": (-0.1, 0.1), "y": (-0.25, 0.25), "z": (0.0, 0.0)},
-            "pose_range": {"x": (0.0, 0.0), "y": (0.0, 0.0), "z": (0.0, 0.0)},
+            "pose_range": {"x": (0.0, 0.0), "y": (-0.25, 0.25), "z": (0.0, 0.0)},
             "velocity_range": {},
             "asset_cfg": SceneEntityCfg("object", body_names="Object"),
         },
@@ -138,9 +174,9 @@ class EventCfg:
 class RewardsCfg:
     """Reward terms for the MDP."""
 
-    reaching_object = RewTerm(func=mdp.object_ee_distance, params={"std": 0.1}, weight=1.0)
+    reaching_object = RewTerm(func=mdp.object_ee_distance_tanh, params={"std": 0.1}, weight=10.0)
 
-    lifting_object = RewTerm(func=mdp.object_is_lifted, params={"minimal_height": 0.04}, weight=15.0)
+    # lifting_object = RewTerm(func=mdp.object_is_lifted, params={"minimal_height": 0.04}, weight=15.0)
 
     # object_goal_tracking = RewTerm(
     #     func=mdp.object_goal_distance,
@@ -153,15 +189,26 @@ class RewardsCfg:
     #     params={"std": 0.05, "minimal_height": 0.04, "command_name": "object_pose"},
     #     weight=5.0,
     # )
+    # end_effector_position_tracking = RewTerm(
+    #     func=mdp.object_ee_distance,
+    #     weight=-0.2,
+    #     # params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "command_name": "ee_pose"},
+    # )
+    # end_effector_position_tracking_fine_grained = RewTerm(
+    #     func=mdp.object_ee_distance_tanh,
+    #     weight=0.1,
+    #     params={"std": 0.1},
+        # params={"asset_cfg": SceneEntityCfg("robot", body_names=MISSING), "std": 0.1, "command_name": "ee_pose"},
+    # )
 
     # action penalty
     action_rate = RewTerm(func=mdp.action_rate_l2, weight=-1e-4)
 
-    # joint_vel = RewTerm(
-    #     func=mdp.joint_vel_l2,
-    #     weight=-1e-4,
-    #     params={"asset_cfg": SceneEntityCfg("robot")},
-    # )
+    joint_vel = RewTerm(
+        func=mdp.joint_vel_l2,
+        weight=-1e-4,
+        params={"asset_cfg": SceneEntityCfg("robot")},
+    )
 
 
 @configclass
@@ -170,9 +217,9 @@ class TerminationsCfg:
 
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
 
-    object_dropping = DoneTerm(
-        func=mdp.root_height_below_minimum, params={"minimum_height": -0.05, "asset_cfg": SceneEntityCfg("object")}
-    )
+    # object_dropping = DoneTerm(
+    #     func=mdp.root_height_below_minimum, params={"minimum_height": -0.05, "asset_cfg": SceneEntityCfg("object")}
+    # )
 
 
 @configclass
@@ -192,13 +239,12 @@ class CurriculumCfg:
 # Environment configuration
 ##
 
-
 @configclass
 class LiftEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the lifting environment."""
 
     # Scene settings
-    scene: ObjectTableSceneCfg = ObjectTableSceneCfg(num_envs=8192, env_spacing=10)
+    scene: ObjectTableSceneCfg = ObjectTableSceneCfg(num_envs=4096, env_spacing=10)
     # Basic settings
     observations: ObservationsCfg = ObservationsCfg()
     actions: ActionsCfg = ActionsCfg()
