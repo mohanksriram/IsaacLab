@@ -269,6 +269,7 @@ class FrameTransformer(SensorBase):
         )
 
         # Stack up all the frame offsets for shape (num_envs, num_frames, 3) and (num_envs, num_frames, 4)
+        # import pdb; pdb.set_trace()
         self._target_frame_offset_pos = torch.stack(target_frame_offset_pos).repeat(self._num_envs, 1)
         self._target_frame_offset_quat = torch.stack(target_frame_offset_quat).repeat(self._num_envs, 1)
 
